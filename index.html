@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    body {
+      background-image: url("https://www.metoffice.gov.uk/binaries/content/gallery/metofficegovuk/hero-images/weather/cloud/altocumulus.jpg");
+      background-repeat: no-repeat;
+    }
+
+    #maindiv {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 40px;
+    }
+
+    #searchbar {
+      display: flex;
+      margin: auto;
+      width: 390px;
+      height: 50px;
+
+      gap: 10px;
+    }
+
+    #search::placeholder {
+      color: rgb(134, 126, 126);
+      font-size: 25px;
+    }
+
+    #search {
+      height: 40px;
+      width: 75%;
+      border-radius: 20px;
+      background-color: rgb(33, 36, 36);
+      color: rgb(216, 198, 198);
+      font-size: 25px;
+    }
+
+    button {
+      height: 49px;
+      border-radius: 25px;
+      background-color: grey;
+      color: white;
+    }
+
+    h3 {
+      color: white;
+    }
+
+    #sunr {
+      display: flex;
+    }
+
+    h2 {
+      color: white;
+    }
+  </style>
+
+  <body>
+    <div id="searchbar">
+      <input onkeyup="getweather()" type="text" placeholder="enter city" id="search" />
+
+      <button onClick="getweather()">Search</button>
+    </div>
+    <div id="maindiv">
+      <div id="weather"></div>
+
+      <div id="ifr"></div>
+    </div>
+  </body>
+</html>
+<script>
+  //e6ed6dd294b2aefb354deddf76a8f17d
+  let weather = document.getElementById("weather");
+
+  async function getweather() {
+    try {
+      let city = document.getElementById("search").value;
+      let res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a177aca15f7346bb64ac09919a0fd534&&units=metric`
+      );
+      let data = await res.json();
+      console.log("data:", data);
+      appEnd(data);
+    } catch (err) {
+      console.log("err:", err);
+    }
+  }
+
+  function appEnd(data) {
+    weather.innerHTML = null;
+
+    document.body.style.backgroundImage =
+      "url('https://source.unsplash.com/1600x900/?" + data.name + "')";
+    weather.innerHTML = null;
+
+    let name = document.createElement("h2");
+    name.innerText = "🌆 City:" + " " + data.name;
+
+    let Min_Temp = document.createElement("h2");
+    Min_Temp.innerText =
+      "Minimun Temperature:-" + " " + data.main.temp_min + "*c";
+
+    let Max_Temp = document.createElement("h2");
+    Max_Temp.innerText =
+      "Maximum temperature:-" + " " + data.main.temp_max + "*c";
+
+    let wind = document.createElement("h2");
+    wind.innerText = "Wind Speed:-" + " " + data.wind.speed;
+
+    let cloud = document.createElement("h2");
+    cloud.innerText = "🌧 Clouds:-" + " " + data.clouds.all;
+
+    let sunrise = document.createElement("h2");
+    sunrise.innerText = "🌅 Sunrise:-" + " " + data.sys.sunrise;
+
+    let sunset = document.createElement("h2");
+    sunset.innerText = "🌇 Sunset:-" + " " + data.sys.sunset;
+
+    weather.append(name, Min_Temp, Max_Temp, wind, cloud, sunrise, sunset);
+
+    let ifr = document.getElementById("ifr");
+
+    ifr.innerHTML = null;
+    let iframe = document.createElement("iframe");
+    iframe.src = `https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+    iframe.height = "500px";
+    iframe.width = "600px";
+
+    ifr.append(iframe);
+  }
+
+  //  function appendData(data){
+
+  //     container.innerHTML = null;
+  //     map.innerHTML = null;
+
+  //   let name = document.createElement("h2")
+  //   name.innerText = "City :"+" "+data.name;
+
+  //   let mintemprature = document.createElement("h2")
+  //   mintemprature.innerText = "Min.Temperature :"+" "+data.main.temp_min+"*C";
+
+  //   let maxtemperature = document.createElement("h2")
+  //   maxtemperature.innerText = "Max.Temperature :"+" "+data.main.temp_max+"*C";
+
+  //   let wind = document.createElement("h2")
+  //   wind.innerText = "Wind speed :"+" "+data.wind.speed;
+
+  //   let clouds=document.createElement("h2")
+  // clouds.innerText="clouds:"+ " "+ data.clouds.all;
+
+  //   let iframe = document.createElement("iframe")
+
+  //   iframe.src = `https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`
+
+  //   container.append(mintemprature,name,maxtemperature,wind,clouds)
+  //   map.append(iframe)
+  //  }
+</script>
